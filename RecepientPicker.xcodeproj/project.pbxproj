@@ -7,14 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3F4A2D7D1E72A26A0084A405 /* TextFieldCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4A2D7C1E72A26A0084A405 /* TextFieldCollectionViewCell.swift */; };
 		3FD7DC1A1E7130CC009828E6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FD7DC191E7130CC009828E6 /* AppDelegate.swift */; };
 		3FD7DC1C1E7130CC009828E6 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FD7DC1B1E7130CC009828E6 /* ViewController.swift */; };
 		3FD7DC1F1E7130CC009828E6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3FD7DC1D1E7130CC009828E6 /* Main.storyboard */; };
 		3FD7DC211E7130CC009828E6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3FD7DC201E7130CC009828E6 /* Assets.xcassets */; };
 		3FD7DC241E7130CC009828E6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3FD7DC221E7130CC009828E6 /* LaunchScreen.storyboard */; };
+		3FD7DC2E1E715BF7009828E6 /* UICollectionViewLeftAlignedLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FD7DC2D1E715BF7009828E6 /* UICollectionViewLeftAlignedLayout.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3F4A2D7C1E72A26A0084A405 /* TextFieldCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextFieldCollectionViewCell.swift; sourceTree = "<group>"; };
 		3FD7DC161E7130CC009828E6 /* RecepientPicker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RecepientPicker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3FD7DC191E7130CC009828E6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3FD7DC1B1E7130CC009828E6 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -22,6 +25,9 @@
 		3FD7DC201E7130CC009828E6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3FD7DC231E7130CC009828E6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3FD7DC251E7130CC009828E6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3FD7DC2B1E715BF7009828E6 /* RecepientPicker-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RecepientPicker-Bridging-Header.h"; sourceTree = "<group>"; };
+		3FD7DC2C1E715BF7009828E6 /* UICollectionViewLeftAlignedLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UICollectionViewLeftAlignedLayout.h; sourceTree = "<group>"; };
+		3FD7DC2D1E715BF7009828E6 /* UICollectionViewLeftAlignedLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UICollectionViewLeftAlignedLayout.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,10 +62,14 @@
 			children = (
 				3FD7DC191E7130CC009828E6 /* AppDelegate.swift */,
 				3FD7DC1B1E7130CC009828E6 /* ViewController.swift */,
+				3F4A2D7C1E72A26A0084A405 /* TextFieldCollectionViewCell.swift */,
+				3FD7DC2C1E715BF7009828E6 /* UICollectionViewLeftAlignedLayout.h */,
+				3FD7DC2D1E715BF7009828E6 /* UICollectionViewLeftAlignedLayout.m */,
 				3FD7DC1D1E7130CC009828E6 /* Main.storyboard */,
 				3FD7DC201E7130CC009828E6 /* Assets.xcassets */,
 				3FD7DC221E7130CC009828E6 /* LaunchScreen.storyboard */,
 				3FD7DC251E7130CC009828E6 /* Info.plist */,
+				3FD7DC2B1E715BF7009828E6 /* RecepientPicker-Bridging-Header.h */,
 			);
 			path = RecepientPicker;
 			sourceTree = "<group>";
@@ -97,6 +107,7 @@
 					3FD7DC151E7130CC009828E6 = {
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = 84K28RPLUW;
+						LastSwiftMigration = 0820;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -137,7 +148,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3F4A2D7D1E72A26A0084A405 /* TextFieldCollectionViewCell.swift in Sources */,
 				3FD7DC1C1E7130CC009828E6 /* ViewController.swift in Sources */,
+				3FD7DC2E1E715BF7009828E6 /* UICollectionViewLeftAlignedLayout.m in Sources */,
 				3FD7DC1A1E7130CC009828E6 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -259,11 +272,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_TEAM = 84K28RPLUW;
 				INFOPLIST_FILE = RecepientPicker/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.clicksend.RecepientPicker;
+				PRODUCT_BUNDLE_IDENTIFIER = com.clicksend.RecipientPicker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "RecepientPicker/RecepientPicker-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
@@ -272,11 +288,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_TEAM = 84K28RPLUW;
 				INFOPLIST_FILE = RecepientPicker/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.clicksend.RecepientPicker;
+				PRODUCT_BUNDLE_IDENTIFIER = com.clicksend.RecipientPicker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "RecepientPicker/RecepientPicker-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
@@ -300,6 +318,7 @@
 				3FD7DC2A1E7130CC009828E6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
