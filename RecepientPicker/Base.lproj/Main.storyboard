@@ -115,11 +115,11 @@
                                 </subviews>
                                 <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
-                                    <constraint firstItem="h2W-EV-FbH" firstAttribute="top" secondItem="ARb-z1-YRO" secondAttribute="top" id="4vV-pL-idf"/>
                                     <constraint firstItem="kNv-Bq-4Hs" firstAttribute="leading" secondItem="ARb-z1-YRO" secondAttribute="leading" constant="8" id="B2p-od-ebL"/>
+                                    <constraint firstAttribute="bottom" secondItem="h2W-EV-FbH" secondAttribute="bottom" id="Gj5-an-XFI"/>
                                     <constraint firstAttribute="trailing" secondItem="h2W-EV-FbH" secondAttribute="trailing" id="Lcj-dp-kgU"/>
                                     <constraint firstAttribute="height" constant="50" id="Lke-ZW-9UM"/>
-                                    <constraint firstAttribute="bottom" secondItem="h2W-EV-FbH" secondAttribute="bottom" id="fvZ-Hj-1c9"/>
+                                    <constraint firstItem="h2W-EV-FbH" firstAttribute="top" secondItem="ARb-z1-YRO" secondAttribute="top" id="iHx-9i-fki"/>
                                     <constraint firstItem="h2W-EV-FbH" firstAttribute="centerY" secondItem="ARb-z1-YRO" secondAttribute="centerY" id="uAQ-vm-9xE"/>
                                     <constraint firstItem="kNv-Bq-4Hs" firstAttribute="top" secondItem="ARb-z1-YRO" secondAttribute="top" constant="14" id="yMz-nd-AoL"/>
                                     <constraint firstItem="h2W-EV-FbH" firstAttribute="leading" secondItem="kNv-Bq-4Hs" secondAttribute="trailing" constant="8" id="zMA-lh-vOh"/>

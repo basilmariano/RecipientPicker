@@ -51,7 +51,9 @@ class ViewController: UIViewController {
     //MARK:  Fileprivate Functions
     fileprivate func updateCollectionViewHeight() {
         
+    
         let contentHeight = collectionView.collectionViewLayout.collectionViewContentSize.height
+
         if contentHeight <= minRecipientBarHeight {
             if contentHeight <= minRecipientBarHeight / 2 {
                 /*
@@ -64,7 +66,7 @@ class ViewController: UIViewController {
             } else {
                 recipientBarHeightConstraint.constant = min(minRecipientBarHeight, collectionView.collectionViewLayout.collectionViewContentSize.height)
                 
-                UIView.animate(withDuration: 0.3, animations: {
+                UIView.animate(withDuration: 0.2, animations: {
                     self.collectionView.layoutIfNeeded()
                     self.recipientBarView.layoutIfNeeded()
                 })
@@ -88,6 +90,9 @@ class ViewController: UIViewController {
             return
         }
         
+        
+        collectionView.collectionViewLayout.prepare()
+        
         collectionView.performBatchUpdates({ [weak self] in
             guard let weakSelf = self else { return }
             
@@ -101,6 +106,7 @@ class ViewController: UIViewController {
             guard let weakSelf = self else { return }
             weakSelf.isUpdatingContent = false
             weakSelf.updateCollectionViewHeight()
+            weakSelf.collectionView.collectionViewLayout.finalizeCollectionViewUpdates()
         }
     }
     
@@ -118,7 +124,7 @@ class ViewController: UIViewController {
         }) {  [weak self] (finished) in
             guard let weakSelf = self else { return }
      
-            weakSelf.updateCollectionViewHeight()       
+            weakSelf.updateCollectionViewHeight()
             weakSelf.indexReadyToDelete = nil
             weakSelf.isUpdatingContent = false
         }
@@ -132,26 +138,29 @@ extension ViewController: UICollectionViewDataSource {
     }
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if indexPath.row == content.count {
-            let textFieldCell = collectionView.dequeueReusableCell(withReuseIdentifier: "TextFieldCell", for: indexPath) as! TextFieldCollectionViewCell
-            textFieldCell.textField.returnKeyType = .next
-            textFieldCell.textField.delegate = self
+        if indexPath.row < content.count {
             
-            return textFieldCell
-        }
-        
-        let recipientCell = collectionView.dequeueReusableCell(withReuseIdentifier: "RecipientCell", for: indexPath)
-        let lbl = recipientCell.viewWithTag(1) as! UILabel
-        lbl.text = content[indexPath.row]
-        
-        recipientCell.backgroundColor = UIColor.blue
-        if let indexReadyToDelete = indexReadyToDelete {
-            if indexPath.row == indexReadyToDelete.row {
-               recipientCell.backgroundColor = UIColor.red
+            let recipientCell = collectionView.dequeueReusableCell(withReuseIdentifier: "RecipientCell", for: indexPath)
+            let lbl = recipientCell.viewWithTag(1) as! UILabel
+            lbl.text = content[indexPath.row]
+            
+            recipientCell.backgroundColor = UIColor.blue
+            if let indexReadyToDelete = indexReadyToDelete {
+                if indexPath.row == indexReadyToDelete.row {
+                    recipientCell.backgroundColor = UIColor.red
+                }
             }
+            
+            return recipientCell
         }
         
-        return recipientCell
+        
+        let textFieldCell = collectionView.dequeueReusableCell(withReuseIdentifier: "TextFieldCell", for: indexPath) as! TextFieldCollectionViewCell
+        textFieldCell.textField.returnKeyType = .next
+        textFieldCell.textField.delegate = self
+        
+        return textFieldCell
+
         
     }
 }
@@ -167,19 +176,19 @@ extension ViewController: UICollectionViewDelegateFlowLayout {
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
+        let font = UIFont.systemFont(ofSize: 14)
+        
         if (content.isEmpty) {
-            let initialWidthForTextfield: CGFloat = 100.0
-            return CGSize(width: initialWidthForTextfield, height: cellHeight)
+            //let initialWidthForTextfield: CGFloat = 100.0
+            return CGSize(width: textFieldText.width(withConstrainedHeight: cellHeight, font: font), height: cellHeight)
         } else {
             
             if indexPath.row == content.count {
                 let string = textFieldText
-                let font = UIFont.systemFont(ofSize: 14)
                 let width = string.width(withConstrainedHeight: cellHeight, font: font)
                 return CGSize(width: width + 33, height: cellHeight)
             } else {
                 let string = content[indexPath.row]
-                let font = UIFont.systemFont(ofSize: 14)
                 let width = string.width(withConstrainedHeight: cellHeight, font: font)
                 return CGSize(width: width + 33, height: cellHeight)
             }
@@ -207,10 +216,10 @@ extension ViewController: UICollectionViewDelegateFlowLayout {
             let width = string.width(withConstrainedHeight: cellHeight, font: font)
             return CGSize(width: width + 33, height: cellHeight)
 
-        }
-         */
+        }*/
+ 
         //return indexPath.row % 3 == 0 ? CGSize(width: 100, height: 23) : CGSize(width: 150, height: 23)
-        //return CGSize(width: 100, height: 23)
+
     }
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
@@ -303,7 +312,18 @@ extension ViewController: UITextFieldDelegate {
                 let nsString = NSString(string: textField.text!)
                 let newText = nsString.replacingCharacters(in: range, with: string)
                 textFieldText = newText
-                collectionView.collectionViewLayout.invalidateLayout()
+            
+                let contentHeight = collectionView.collectionViewLayout.collectionViewContentSize.height
+                if contentHeight >= minRecipientBarHeight {
+                    let indexPath = IndexPath(row: collectionView.numberOfItems(inSection: 0) - 1, section: 0)
+                    collectionView.collectionViewLayout.invalidateLayout()
+                    collectionView.scrollToItem(at: indexPath, at: .init(rawValue: 0), animated: false)
+                    if (contentHeight > minRecipientBarHeight && recipientBarHeightConstraint.constant < maxRecipientBarHeight) {
+                        updateCollectionViewHeight()
+                    }
+                } else {
+                     collectionView.collectionViewLayout.invalidateLayout()
+                }
             }
         }
         
