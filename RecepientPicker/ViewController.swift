@@ -21,6 +21,10 @@ class ViewController: UIViewController {
     fileprivate var indexReadyToDelete: IndexPath?
     fileprivate var isUpdatingContent = false
     fileprivate var textFieldText = " "
+    fileprivate var textField: UITextField!
+    private var firstTimeDidLayoutSubviewsCount = 0;
+    
+    //fileprivate var textFieldCell: UICollectionViewCell!
     
     //MARK:  View life Cycle
     
@@ -34,7 +38,7 @@ class ViewController: UIViewController {
         recipientBarView.layer.shadowOffset = CGSize(width: 0, height: 1)
         recipientBarView.layer.shadowOpacity = 0.5
         recipientBarView.layer.shadowRadius = 1.0
-        recipientBarView.clipsToBounds = false
+        recipientBarView.clipsToBounds = true
     
     }
     
@@ -45,7 +49,10 @@ class ViewController: UIViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        updateCollectionViewHeight()
+        if firstTimeDidLayoutSubviewsCount < 2{
+            updateCollectionViewHeight()
+            firstTimeDidLayoutSubviewsCount += 1
+        }
     }
     
     //MARK:  Fileprivate Functions
@@ -90,9 +97,6 @@ class ViewController: UIViewController {
             return
         }
         
-        
-        collectionView.collectionViewLayout.prepare()
-        
         collectionView.performBatchUpdates({ [weak self] in
             guard let weakSelf = self else { return }
             
@@ -106,7 +110,6 @@ class ViewController: UIViewController {
             guard let weakSelf = self else { return }
             weakSelf.isUpdatingContent = false
             weakSelf.updateCollectionViewHeight()
-            weakSelf.collectionView.collectionViewLayout.finalizeCollectionViewUpdates()
         }
     }
     
@@ -138,30 +141,37 @@ extension ViewController: UICollectionViewDataSource {
     }
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if indexPath.row < content.count {
+        print("Loading \(indexPath.row)")
+        if indexPath.row == content.count {
             
-            let recipientCell = collectionView.dequeueReusableCell(withReuseIdentifier: "RecipientCell", for: indexPath)
-            let lbl = recipientCell.viewWithTag(1) as! UILabel
-            lbl.text = content[indexPath.row]
+            let textFieldCell = collectionView.dequeueReusableCell(withReuseIdentifier: "TextFieldCell", for: indexPath) as! TextFieldCollectionViewCell
+            textFieldCell.textField.returnKeyType = .next
+            textFieldCell.textField.delegate = self
             
-            recipientCell.backgroundColor = UIColor.blue
-            if let indexReadyToDelete = indexReadyToDelete {
-                if indexPath.row == indexReadyToDelete.row {
-                    recipientCell.backgroundColor = UIColor.red
-                }
+            
+            if let _ = self.textField {
+                //No Op
+                //self.textField.becomeFirstResponder()
+            } else {
+                self.textField = textFieldCell.textField
             }
             
-            return recipientCell
+            return textFieldCell
         }
         
-        
-        let textFieldCell = collectionView.dequeueReusableCell(withReuseIdentifier: "TextFieldCell", for: indexPath) as! TextFieldCollectionViewCell
-        textFieldCell.textField.returnKeyType = .next
-        textFieldCell.textField.delegate = self
-        
-        return textFieldCell
 
+        let recipientCell = collectionView.dequeueReusableCell(withReuseIdentifier: "RecipientCell", for: indexPath)
+        let lbl = recipientCell.viewWithTag(1) as! UILabel
+        lbl.text = content[indexPath.row]
         
+        recipientCell.backgroundColor = UIColor.blue
+        if let indexReadyToDelete = indexReadyToDelete {
+            if indexPath.row == indexReadyToDelete.row {
+                recipientCell.backgroundColor = UIColor.red
+            }
+        }
+        
+        return recipientCell
     }
 }
 
@@ -179,8 +189,12 @@ extension ViewController: UICollectionViewDelegateFlowLayout {
         let font = UIFont.systemFont(ofSize: 14)
         
         if (content.isEmpty) {
+            var textFieldTextWidth = textFieldText.width(withConstrainedHeight: cellHeight, font: font)
+            if (textFieldText.characters.count == 1) {
+                textFieldTextWidth = 100
+            }
             //let initialWidthForTextfield: CGFloat = 100.0
-            return CGSize(width: textFieldText.width(withConstrainedHeight: cellHeight, font: font), height: cellHeight)
+            return CGSize(width: textFieldTextWidth + 30, height: cellHeight)
         } else {
             
             if indexPath.row == content.count {
@@ -227,6 +241,13 @@ extension ViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
+//MARK: UIScrollViewDelegate
+extension ViewController: UIScrollViewDelegate {
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        //collectionView.collectionViewLayout.invalidateLayout()
+    }
+}
+
 //MARK: UITextFieldDelegate
 extension ViewController: UITextFieldDelegate {
     
@@ -235,19 +256,44 @@ extension ViewController: UITextFieldDelegate {
     }
     
     public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textFieldText = textField.text!
-        insertNewRecipeint(textField.text!)
         
-        /*
-         Make sure to clear the TextField value after insertion
-         
-         NOTE: Textfield default value is  " ", we dont want to make the text empty bec. 
-         "func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool" function will never be called if trying to click BackScpace if the  textField.text is empty
-         */
-        textField.text = " "
-        textFieldText = textField.text!
         
-        return true
+        let visibleIndexPaths = collectionView.indexPathsForVisibleItems
+        
+        let textFieldIndexPath = IndexPath(row: content.count, section: 0)
+        
+        if visibleIndexPaths.contains(where: { (indexPath) -> Bool in
+            return indexPath.row == textFieldIndexPath.row
+        }) {
+            textFieldText = textField.text!
+            insertNewRecipeint(textField.text!)
+            
+            /*
+             Make sure to clear the TextField value after insertion
+             
+             NOTE: Textfield default value is  " ", we dont want to make the text empty bec.
+             "func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool" function will never be called if trying to click BackScpace if the  textField.text is empty
+             */
+            textField.text = " "
+            textFieldText = textField.text!
+            
+            return true
+            
+        } else {
+            
+            collectionView.scrollToItem(at: textFieldIndexPath, at: .init(rawValue: 0), animated: false)
+            collectionView.collectionViewLayout.invalidateLayout()
+            collectionView.scrollToItem(at: textFieldIndexPath, at: .init(rawValue: 0), animated: false)
+            
+        
+            //self.textField.becomeFirstResponder()
+            
+            return false
+        }
+        
+        
+        
+        
     }
     
     public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
@@ -309,13 +355,34 @@ extension ViewController: UITextFieldDelegate {
                 textField.text = " "
                 textFieldText = textField.text!
             } else {
+                
+                let visibleIndexPaths = collectionView.indexPathsForVisibleItems
+             
+                let textFieldIndexPath = IndexPath(row: content.count, section: 0)
+                if visibleIndexPaths.contains(where: { (indexPath) -> Bool in
+                    return indexPath.row == textFieldIndexPath.row
+                }) {
+                    //No Op
+                } else {
+                    
+                    collectionView.scrollToItem(at: textFieldIndexPath, at: .init(rawValue: 0), animated: false)
+                    collectionView.collectionViewLayout.invalidateLayout()
+                    collectionView.scrollToItem(at: textFieldIndexPath, at: .init(rawValue: 0), animated: false)
+                    //collectionView.scrollToItem(at:textFieldIndexPath, at: .init(rawValue: 0), animated: false)
+                    //self.textField.becomeFirstResponder()
+                    
+                    return false
+                }
+
+                
                 let nsString = NSString(string: textField.text!)
                 let newText = nsString.replacingCharacters(in: range, with: string)
                 textFieldText = newText
             
                 let contentHeight = collectionView.collectionViewLayout.collectionViewContentSize.height
                 if contentHeight >= minRecipientBarHeight {
-                    let indexPath = IndexPath(row: collectionView.numberOfItems(inSection: 0) - 1, section: 0)
+                    let indexPath = IndexPath(row: textFieldIndexPath.row, section: 0)
+                    collectionView.scrollToItem(at: indexPath, at: .init(rawValue: 0), animated: false)
                     collectionView.collectionViewLayout.invalidateLayout()
                     collectionView.scrollToItem(at: indexPath, at: .init(rawValue: 0), animated: false)
                     if (contentHeight > minRecipientBarHeight && recipientBarHeightConstraint.constant < maxRecipientBarHeight) {
